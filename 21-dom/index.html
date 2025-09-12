@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript DOM</title>
+</head>
+<body>
+<h1 class="title">JavaScript DOM</h1>
+<h2>Öğrenc listesi</h2>
+
+<ul class="list">
+    <li class="list-item">Ali</li>
+    <li class="list-item">Veli</li>
+    <li class="list-item">Ahmet</li>
+    <li class="list-item">Rümeysa</li>
+    <li class="list-item">Nur</li>
+</ul>
+
+<h1 class="title" id="title">JavaScript DOM</h1>
+<h1 class="title">JavaScript DOM</h1>
+<h1 class="title">JavaScript DOM</h1>
+    
+
+    <script >
+        // !Tekli seçiciler
+        const title = document.querySelector("h1")
+        const title2 = document.getElementById(" title")
+        title.style.color ="red"
+        title2.style.color = "blue"
+      document.querySelector("h1").style.color = "red"
+      document.querySelector("h1").style.backgroundColor = "blue"
+      document.querySelector("h1").style.width= "250px"
+      document.querySelector("h1").style.height= "250px"
+      const title = document.querySelector("h1")
+      title.innerText = "DOM"
+      title.innerHTML= "<button>click</button>"
+      const list = document.querySelector("ul")
+      document.querySelector("li").style.color = "red";
+      document.querySelector("li:last-child").style.color = "blue";
+      document.querySelector("li:nth-child(2)").style.color = "purple";
+      document.querySelector("li:nth-child(3)").style.color = "blue";
+      document.querySelector("li:nth-child(4)").style.color = "red";
+
+   
+      //!Çoklu seçiciler
+const listItem = document.getElementsByClassName("list-item")
+for ( let i = 0; i< listItem.length; i++) {
+listItem[i].style.color= "red"
+    
+}
+// yukardakini daka kolay öntemmi.
+for(let list of listItem){
+    list.style.color = "red"
+}
+    </script>
+</body>
+</html>

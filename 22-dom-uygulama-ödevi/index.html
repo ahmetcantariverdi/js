@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!--! Tailwind Play CDN  -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Dom Uygulama ödevi</title>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <h1 class="text-5xl my-10 text-center">Todo List</h1>
+
+  <div class="container mx-auto w-1/2">
+    <form id="todo-form">
+      <div class="border flex">
+        <input type="text" placeholder="Bir şeyler yazınız..." class="w-full p-3" id="todo-input" autocomplete="off">
+        <button type="submit" class="px-6 bg-green-500 text-white" id="add-todo">Ekle</button>
+      </div>
+    </form>
+
+    <div class="flex justify-end my-5">
+      <button id="clear-btn" class="p-3 bg-red-500 text-white">Temizle</button>
+    </div>
+
+    <ul class="border p-6 flex flex-col gap-y-4" id="todos">
+
+    </ul>
+  </div>
+
+  <script>
+    const textInputDOM = document.getElementById("todo-input");
+    const formDOM = document.getElementById("todo-form");
+    const todosDOM = document.getElementById("todos");
+    const clearBtn = document.getElementById("clear-btn");
+
+    let textInputValue = "";
+    let todos = [];
+
+    textInputDOM.addEventListener("input", (e) => textInputValue = e.target.value);
+
+    formDOM.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const title = textInputValue.trim();
+      if (!title) return; // boşsa ekleme
+      todos.push({ id: Date.now(), todoTitle: title });
+      textInputDOM.value = "";
+      textInputValue = "";
+      displayTodos();
+    });
+
+    clearBtn.addEventListener("click", () => {
+      todos = [];
+      displayTodos();
+    });
+
+    function displayTodos() {
+      let result = "";
+      todos.forEach(item => {
+        result += `
+          <li class="flex justify-between border px-4 py-3 items-center">
+            <span>${item.todoTitle}</span>
+            <button class="text-red-400 btn-delete" data-id="${item.id}">Sil</button>
+          </li>
+        `;
+      });
+      todosDOM.innerHTML = result;
+
+      
+      todosDOM.querySelectorAll(".btn-delete").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = Number(btn.dataset.id);
+          todos = todos.filter(t => t.id !== id);
+          displayTodos();
+        });
+      });
+    }
+  </script>
+</body>
+</html>

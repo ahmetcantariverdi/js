@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Todo List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Body'ye animasyonlu gradyan arka plan ekler */
+        body {
+            background: linear-gradient(-45deg, #1a1a1a, #333333, #4b4a4a, #696868, #5c5a5a, #757577);
+            background-size: 400% 400%;
+            animation: gradient-animation 15s ease infinite;
+        }
+
+        @keyframes gradient-animation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        /* Not kutuları için animasyonlu gradyan arka plan */
+        .animated-gradient {
+            background: linear-gradient(-45deg, #171718,#39393a,#4e4e4e,#5b5b5c, #7f7f80, #7d7d7e, #88888a);
+            color: white;
+            background-size: 400% 400%;
+            animation: note-gradient-animation 10s ease infinite;
+        }
+
+        @keyframes note-gradient-animation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+
+        #todo-input {
+            display: flex;
+            align-items: center;
+        }
+        
+
+        .icon-tick{
+          width: 50px;
+        }
+        .icon-cancel{
+          width: 30px;
+        } 
+
+        .notification {
+            background: linear-gradient(-45deg, #b30000, #ff3333, #e60000);
+            background-size: 400% 400%;
+            animation: notification-gradient 10s ease infinite;
+        }
+
+        @keyframes notification-gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    
+    <div id="notification-box" class="fixed top-4 right-4 p-4 rounded-lg shadow-lg text-white max-w-xs z-50 notification">
+        <button id="close-notification" class="absolute top-2 right-2 text-white text-xl font-bold hover:text-gray-200 focus:outline-none">
+            &times;
+        </button>
+        <p>Bu Todo List'e eklenen notlar kaydedilir ve uygulamayı kapatsanız bile orada kalır. Notlar, 'Sil' butonuna basılmadığı sürece silinmez.</p>
+    </div>
+
+    <h1 class="text-5xl my-10 text-center text-white">Todo List</h1>
+
+    <div class="container mx-auto w-1/2">
+        <form id="todo-form">
+            <div class="border flex">
+                <textarea 
+                    placeholder="Not alanı..."
+                    class="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:border-green-500 focus:border-2"
+                    id="todo-input" 
+                    rows="2"
+                ></textarea>
+                <button type="submit" class="px-6 bg-green-500 text-white" id="add-todo"><img src="icons/tick.png" class="icon-tick" alt="tick-icon"></button>
+            </div>
+        </form>
+
+        <div class="flex justify-end my-5 hidden" id="action-buttons-container">
+            <button id="clear-btn" class="p-3 bg-red-500 text-white"><img src="icons/cancel.png" class="icon-cancel" alt="cancel-icon"></button>
+        </div>
+
+        <ul class="border p-6 flex flex-col gap-y-4 bg-white hidden animated-gradient" id="todos"></ul>
+    </div>
+
+    <script>
+        const textInputDOM = document.getElementById("todo-input");
+        const formDOM = document.getElementById("todo-form");
+        const todosDOM = document.querySelector("#todos");
+        const clearBtn = document.querySelector("#clear-btn");
+        const actionButtonsContainerDOM = document.getElementById("action-buttons-container");
+        const notificationBoxDOM = document.getElementById("notification-box");
+        const closeNotificationBtn = document.getElementById("close-notification");
+
+        let todos = JSON.parse(localStorage.getItem("todos")) || [];
+
+        displayTodos();
+
+        formDOM.addEventListener("submit", function (e) {
+          e.preventDefault(); 
+          
+          const title = textInputDOM.value.trim();
+          if (!title) return;
+
+          todos.push({ id: Date.now(), todoTitle: title });
+          saveToLocalStorage();
+          textInputDOM.value = "";
+          displayTodos();
+        });
+
+        clearBtn.addEventListener("click", () => {
+          todos = [];
+          saveToLocalStorage();
+          displayTodos();
+        });
+
+        closeNotificationBtn.addEventListener("click", () => {
+            notificationBoxDOM.classList.add('hidden');
+        });
+
+        function displayTodos() {
+          if (todos.length === 0) {
+            todosDOM.classList.add('hidden');
+            actionButtonsContainerDOM.classList.add('hidden');
+            return;
+          }
+
+          todosDOM.classList.remove('hidden');
+          actionButtonsContainerDOM.classList.remove('hidden');
+
+          let result = "";
+          todos.forEach(item => {
+            result += `
+              <li class="flex justify-between border-2 px-4 py-3 items-start font-bold">
+                <span class="break-words whitespace-normal w-4/5">${item.todoTitle}</span>
+                <button class="text-red-400 btn-delete" data-id="${item.id}">Sil</button>
+              </li>
+            `;
+          });
+          todosDOM.innerHTML = result;
+
+          todosDOM.querySelectorAll(".btn-delete").forEach(btn => {
+            btn.addEventListener("click", () => {
+              const id = Number(btn.dataset.id);
+              
+              todos = todos.filter(t => t.id !== id);
+              
+              saveToLocalStorage();
+              displayTodos();
+            });
+          });
+        }
+
+        function saveToLocalStorage() {
+          localStorage.setItem("todos", JSON.stringify(todos));
+        }
+    </script>
+</body>
+</html>
