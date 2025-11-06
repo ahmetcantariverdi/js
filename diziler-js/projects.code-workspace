@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../../../projects"
+		},
+		{
+			"path": "../.."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "YazılımDers",
+		"liveServer.settings.port": 5501
+	}
+}
